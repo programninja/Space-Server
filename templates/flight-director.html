@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Space Server</title>
+    <link rel="stylesheet" href="../static/css/spaceserver.css">
+    <script src="../static/javascript/jquery-1.11.1.min.js"></script>
+    <script src="../static/javascript/socketio.min.js"></script>
+    <script type="text/javascript">
+        function signOut() {
+        location.href = ('index.html')
+        }
+        function showSomething(id) {
+        document.getElementById(id).style.display = 'block';
+        }
+        function hideSomething(id) {
+        document.getElementById(id).style.display = 'none';
+        }
+        var socket = io.connect('http://' +window.location.hostname+ ':' +window.location.port+ '/main');
+        socket.on('message', function(data) {
+        console.log(data);
+        if(data == "connected") {
+        showSomething('shipstarted');
+        }
+        else if(data == "connected missionyes") {
+        showSomething('shipstarted');
+        }
+        });
+        function startMission() {
+        socket.send('start mission');
+        console.log("mission sent");
+        }
+    </script>
+</head>
+
+
+<body onload="hideSomething('shipstarted')">
+    <div id="shipstarted" class="alert alert-dismissable alert-success">
+        <button type="button" class="close" onclick="hideSomething('shipstarted')">X</button>
+        <strong>Ship Has Been Started</strong>
+        <p>The server has been started and the rest of the ship is now functional.</p>
+    </div>
+<div class="navbar navbar-default">
+  <div class="navbar-header">
+    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </button>
+    <a class="navbar-brand" href="flight-director.html">Flight Director</a>
+  </div>
+  <div class="navbar-collapse collapse navbar-responsive-collapse">
+    <ul class="nav navbar-nav">
+      <li class="active"><a href="flight-director.html">General</a></li>
+      <li><a href="flight-director-navigations.html">Navigations</a></li>
+      <li><a href="flight-director-operations.html">Operations</a></li>
+      <li><a href="flight-director-tactical.html">Tactical</a></li>
+      <li><a href="flight-director-engineering.html">Engineering</a></li>
+      <li><a href="flight-director-admiral.html">Admiral</a></li>
+    </ul>
+    <form class="navbar-form navbar-left">
+      <input class="form-control col-lg-8" placeholder="Search" type="text">
+    </form>
+    <ul class="nav navbar-nav navbar-right">
+      <li><a href="#" onclick="signOut()">Sign Out</a></li>
+    </ul>
+  </div>
+</div>
+<button class="btn btn-default" onclick="startMission()">Start Mission</button>
+</body>
+</html>

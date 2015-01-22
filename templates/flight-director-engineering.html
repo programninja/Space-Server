@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Space Server</title>
+    <link rel="stylesheet" href="../static/css/spaceserver.css">
+    <script src="../static/javascript/jquery-1.11.1.min.js"></script>
+    <script src="../static/javascript/socketio.min.js"></script>
+    <script type="text/javascript">
+    var engineerLoggedIn = "no";
+    var engineerFakeName = "Not Logged In";
+    var engineerName = "Not Logged In";
+    var select;
+    var option;
+    var fakeBrokenSystem;
+    var brokenSystem;
+    var brokenSystems = document.getElementById('brokensystems');
+    var value;
+    var systemName;
+        function signOut() {
+        location.href = ('index.html')
+        }
+        function showSomething(id) {
+        document.getElementById(id).style.display = 'block';
+        }
+        function hideSomething(id) {
+        document.getElementById(id).style.display = 'none';
+        }
+        var socket = io.connect('http://' +window.location.hostname+ ':' +window.location.port+ '/main');
+        socket.on('message', function(data) {
+        console.log(data);
+        if(data == "connected") {
+        showSomething('shipstarted');
+        }
+        else if(data == "connected missionyes") {
+        showSomething('shipstarted');
+        }
+        if(data.startsWith("engineertaken: ")) {
+        engineerLoggedIn = "yes";
+        engineerFakeName = data;
+        engineerName = engineerFakeName.replace("engineertaken: ", "");
+        console.log(engineerName)
+        document.getElementById('engineername').value = engineerName;
+        }
+        if(data.startsWith("brokensystem: ")) {
+        fakeBrokenSystem = data;
+        brokenSystem = fakeBrokenSystem.replace("brokensystem: ", "");
+        console.log(brokenSystem)
+        select = document.getElementById('brokensystems');
+        option = document.createElement("option");
+        option.text = brokenSystem;
+        select.add(option);
+        }
+        if(data == "predamage") {
+        document.getElementById('brokensystems').options.length = 0;
+        console.log("asldkjfa;lskdjf")
+        }
+        });
+        function breakSystem() {
+        systemName = document.getElementById('brokensystemname').value;
+        socket.send('brokensystem: ' + systemName)
+        console.log(systemName)
+        document.getElementById('brokensystemname').value = "";
+        }
+        function fixSystem() {
+        value = document.getElementById('brokensystems').value;
+        console.log(value);
+        socket.send('fixsystem: ' + value)
+        }
+    </script>
+</head>
+
+
+<body onload="hideSomething('shipstarted')">
+    <div id="shipstarted" class="alert alert-dismissable alert-success">
+        <button type="button" class="close" onclick="hideSomething('shipstarted')">X</button>
+        <strong>Ship Has Been Started</strong>
+        <p>The server has been started and the rest of the ship is now functional.</p>
+    </div>
+<div class="navbar navbar-default">
+  <div class="navbar-header">
+    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </button>
+    <a class="navbar-brand" href="flight-director.html">Flight Director</a>
+  </div>
+  <div class="navbar-collapse collapse navbar-responsive-collapse">
+    <ul class="nav navbar-nav">
+      <li><a href="flight-director.html">General</a></li>
+      <li><a href="flight-director-navigations.html">Navigations</a></li>
+      <li><a href="flight-director-operations.html">Operations</a></li>
+      <li><a href="flight-director-tactical.html">Tactical</a></li>
+      <li class="active"><a href="flight-director-engineering.html">Engineering</a></li>
+      <li><a href="flight-director-admiral.html">Admiral</a></li>
+    </ul>
+    <form class="navbar-form navbar-left">
+      <input class="form-control col-lg-8" placeholder="Search" type="text">
+    </form>
+    <ul class="nav navbar-nav navbar-right">
+      <li><a href="#" onclick="signOut()">Sign Out</a></li>
+    </ul>
+  </div>
+</div>
+<div class="form-group">
+  <label class="control-label" for="disabledInput">Engineer Name</label>
+  <input id="engineername" class="form-control" id="disabledInput" placeholder="" disabled="" type="text">
+</div>
+<form class="form-horizontal" style="width:864px;">
+  <fieldset>
+    <legend>Broken Systems</legend>
+    <div class="form-group">
+      <label for="textArea" class="col-lg-2 control-label">Textarea</label>
+      <div class="col-lg-10">
+        <label class="control-label" for="disabledInput">Add Broken System</label>
+        <input id="brokensystemname" class="form-control" placeholder="" type="text" onkeydown="if (event.keyCode == 13) { breakSystem() }">
+        <br>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="select" class="col-lg-2 control-label">List Of Broken Systems</label>
+      <div class="col-lg-10">
+        <select id="brokensystems" multiple="" class="form-control">
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="col-lg-10 col-lg-offset-2">
+      </div>
+    </div>
+  </fieldset>
+</form>
+<button onclick="breakSystem()" class="btn btn-primary">Break System</button>
+<button onclick="fixSystem()" class="btn btn-primary">Fix System</button>
+</body>
+</html>

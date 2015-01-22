@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Space Server</title>
+    <link rel="stylesheet" href="../static/css/spaceserver.css">
+    <script src="../static/javascript/jquery-1.11.1.min.js"></script>
+    <script src="../static/javascript/socketio.min.js"></script>
+    <script type="text/javascript">
+    var admiralLoggedIn = "no";
+    var admiralFakeName = "Not Logged In";
+    var admiralName = "Not Logged In";
+    var socket = io.connect('http://' +window.location.hostname+ ':' +window.location.port+ '/main');
+        function signOut() {
+        location.href = ('index.html')
+        }
+        function showSomething(id) {
+        document.getElementById(id).style.display = 'block';
+        }
+        function hideSomething(id) {
+        document.getElementById(id).style.display = 'none';
+        }
+        socket.on('message', function(data) {
+        console.log(data);
+        if(data.startsWith("admiraltaken: ")) {
+        admiralLoggedIn = "yes";
+        admiralFakeName = data;
+        admiralName = admiralFakeName.replace("admiraltaken: ", "");
+        console.log(admiralName)
+        }
+        });
+    </script>
+</head>
+
+
+<body onload="hideSomething('shipstarted')">
+<div class="navbar navbar-default">
+  <div class="navbar-header">
+    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </button>
+    <a class="navbar-brand" href="admiral.html">Admiral</a>
+  </div>
+  <div class="navbar-collapse collapse navbar-responsive-collapse">
+    <ul class="nav navbar-nav">
+      <li><a href="admiral.html">Command Control</a></li>
+      <li class="active"><a href="admiral-self-destruct.html">Self Destruct</a></li>
+    </ul>
+    <form class="navbar-form navbar-left">
+      <input class="form-control col-lg-8" placeholder="Search" type="text">
+    </form>
+    <ul class="nav navbar-nav navbar-right">
+      <li><a href="#" onclick="signOut()">Sign Out</li>
+    </ul>
+  </div>
+</div>
+</body>
+</html>
