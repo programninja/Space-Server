@@ -7,6 +7,9 @@
     <script src="../static/javascript/socketio.min.js"></script>
     <script src="../static/javascript/jquery-2.1.3.min.js"></script>
     <script type="text/javascript">
+    var damageReport1 = "Step 1: Fix the system.";
+    var damageReport2 = "Step 1: Fix another system.";
+    var reportNumber;
     var fakeBrokenSystem = "";
     var brokenSystem = "";
     var select = "";
@@ -35,6 +38,10 @@
         });
         function start() {
         hideSomething('noconnection')
+        hideSomething('damageteamtabs')
+        hideSomething('damageteamtabcontent')
+        showSomething('damagecontroltabs')
+        showSomething('damagecontroltabcontent')
         }
     function goToDamageControl() {
         hideSomething('damageteamtabs')
@@ -47,6 +54,11 @@
         hideSomething('damagecontroltabcontent')
         showSomething('damageteamtabs')
         showSomething('damageteamtabcontent')
+    }
+    function fixSystem() {
+        showSomething('damagereportfield')
+        reportNumber = Math.floor((Math.random() * 2) + 1);
+        document.GetElementById('damagereportfield').value = damageReport + reportNumber
     }
     </script>
 </head>
@@ -94,7 +106,8 @@
                 <select id="brokensystems" multiple="" class="form-control">
                 </select>
             </div>
-        </div></p>
+        </div>
+    <button class="btn btn-primary" onclick="fixSystem()">Fix System</button></p>
     </div>
 </div>
 <ul id="damageteamtabs" class="nav nav-tabs">
